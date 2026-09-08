@@ -1,0 +1,70 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Open WR — .dockerignore
+#  Reduces build context sent to Docker daemon → faster builds, smaller images
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Git ───────────────────────────────────────────────────────────────────────
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# ── Build artifacts ───────────────────────────────────────────────────────────
+/bin/
+/dist/
+*.exe
+*.test
+*.out
+
+# ── Test & coverage ───────────────────────────────────────────────────────────
+*_test.go
+coverage.out
+coverage.html
+*.coverprofile
+
+# ── Environment & secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+*.pem
+*.key
+*.crt
+
+# ── Config overrides (only ship example into image) ───────────────────────────
+config.yaml
+config.yml
+config.local.yaml
+config.local.yml
+
+# ── Docker files (not needed inside the image) ────────────────────────────────
+Dockerfile*
+docker-compose*.yml
+docker-compose*.yaml
+.dockerignore
+
+# ── Documentation ─────────────────────────────────────────────────────────────
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
+docs/
+*.md
+
+# ── Editor & IDE ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS artifacts ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*~
+
+# ── Profiling & logs ──────────────────────────────────────────────────────────
+*.prof
+*.log
+logs/
+
+# ── Go workspace ──────────────────────────────────────────────────────────────
+go.work
+go.work.sum

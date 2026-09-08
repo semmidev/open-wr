@@ -1,0 +1,60 @@
+
+server:
+  listen: ":8080"
+  origin: "http://localhost:3000"     # Set ke URL BE kamu; kosong = gunakan demo handler
+
+  # Secret untuk HMAC-SHA256 cookie signing. Minimal 32 karakter.
+  # Selalu override via env var di production: OPENWR_COOKIE_SECRET=...
+  cookie_secret: "change-this-to-a-random-32-char-secret!!"
+
+  # Paksa Secure flag pada cookie. Set true jika serving via HTTPS.
+  # Override: OPENWR_SECURE_COOKIES=true
+  secure_cookies: false
+
+  # Redis — gunakan di deployment multi-instance atau production.
+  # Override: OPENWR_REDIS_ADDR, OPENWR_REDIS_ENABLED
+  redis_addr: "localhost:6379"
+  redis_enabled: false
+
+  # Log level: debug | info | warn | error
+  # Override: OPENWR_LOG_LEVEL
+  log_level: "info"
+
+  # API key untuk melindungi /api/rooms endpoints.
+  # Kosong = akses bebas (development only). Set di production!
+  # Override: OPENWR_ADMIN_API_KEY
+  admin_api_key: ""
+
+  # Allowed origin untuk CORS di /__owr/waiting-room/status
+  # "*" = allow all (default). Set ke domain kamu di production.
+  # Override: OPENWR_CORS_ORIGIN
+  cors_origin: "*"
+
+# Kamu bisa punya banyak waiting room, masing-masing untuk path / host berbeda.
+rooms:
+  - id: "flash_sale"
+    name: "Flash Sale iPhone 15 Pro"
+    description: "Antrean virtual untuk flash sale eksklusif"
+    path: "/flash/*"          # Glob: /flash/* match semua sub-path
+    host: ""                  # Kosong = semua host
+    enabled: true
+    queue_all: false          # true = semua user antre (cocok untuk pre-queue sebelum event)
+    new_users_per_minute: 1200 # Berapa user baru dilepas per menit
+    total_active_users: 200    # Max sesi aktif bersamaan
+    session_duration_minutes: 10
+    queueing_method: "fifo"   # fifo | random (random = lottery anti-bot)
+    cookie_name: "__owr"      # Prefix cookie; akan menjadi __owr_flash_sale
+    custom_page_template: ""  # Kosong = gunakan template bawaan; isi dengan path ke file .html
+    disable_session_renewal: false
+    json_response_enabled: false # true = return JSON untuk API client (bukan HTML)
+
+  - id: "ticket_war"
+    name: "Ticket War Konser"
+    description: "Antrean konser — semua user wajib antre"
+    path: "/concert/*"
+    enabled: true
+    queue_all: true           # Pre-queue: semua user masuk antrean
+    new_users_per_minute: 600
+    total_active_users: 300
+    session_duration_minutes: 20
+    queueing_method: "random" # Lottery: cegah bot yang datang paling duluan

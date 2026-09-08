@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waiting Room — {{.RoomName}}</title>
+<noscript>
+  <!-- Fallback for browsers with JS disabled: use meta refresh -->
+  <meta http-equiv="refresh" content="{{.RefreshInterval}}">
+</noscript>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Calendly Design System Tokens */
+    --color-ink-navy: #0b3558;
+    --color-signal-blue: #006bff;
+    --color-slate-gray: #476788;
+    --color-mist-gray: #a6bbd1;
+    --color-cloud: #f8f9fb;
+    --color-paper: #ffffff;
+    --color-pebble: #f0f3f8;
+    --color-hairline: #d4e0ed;
+    --color-coral-magenta: #e55cff;
+    --color-sky-cyan: #0099ff;
+    --color-deep-cobalt: #004eba;
+    --font-family: 'Manrope', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --shadow-card: rgba(71, 103, 136, 0.04) 0px 4px 5px 0px, rgba(71, 103, 136, 0.03) 0px 8px 15px 0px, rgba(71, 103, 136, 0.08) 0px 30px 50px 0px;
+    --shadow-inner: rgba(71, 103, 136, 0.04) 0px 4px 5px 0px, rgba(71, 103, 136, 0.03) 0px 4px 10px 0px;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family);
+    background-color: var(--color-cloud);
+    color: var(--color-ink-navy);
+    padding: 24px 16px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Decorative Ambient Blobs (Calendly Signature Collages) */
+  .bg-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.45;
+  }
+  .bg-blob-magenta {
+    width: 380px;
+    height: 380px;
+    background: var(--color-coral-magenta);
+    top: -100px;
+    left: -100px;
+  }
+  .bg-blob-cyan {
+    width: 420px;
+    height: 420px;
+    background: var(--color-sky-cyan);
+    bottom: -120px;
+    right: -120px;
+  }
+
+  /* Main Floating Product Card */
+  .card {
+    position: relative;
+    z-index: 1;
+    background: var(--color-paper);
+    border: 1px solid var(--color-hairline);
+    border-radius: 24px;
+    box-shadow: var(--shadow-card);
+    max-width: 540px;
+    width: 100%;
+    padding: 44px 36px 36px;
+    text-align: center;
+  }
+
+  /* Top Brand Header */
+  .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e6f0ff;
+    color: var(--color-deep-cobalt);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 9999px;
+    margin-bottom: 24px;
+    letter-spacing: 0.3px;
+  }
+  .brand-badge svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-ink-navy);
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .desc {
+    color: var(--color-slate-gray);
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 28px;
+    font-weight: 400;
+  }
+
+  /* Queue Position Inner Box */
+  .queue-box {
+    background: var(--color-pebble);
+    border: 1px solid var(--color-hairline);
+    border-radius: 16px;
+    padding: 24px 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-inner);
+  }
+
+  .queue-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-slate-gray);
+    margin-bottom: 8px;
+  }
+
+  .queue-num {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-signal-blue);
+    margin: 4px 0 16px;
+    letter-spacing: -0.03em;
+  }
+
+  /* Smooth Progress Bar */
+  .progress-wrap {
+    background: #d4e0ed;
+    border-radius: 9999px;
+    height: 8px;
+    overflow: hidden;
+    margin: 0 auto;
+    max-width: 100%;
+    position: relative;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 50%;
+    background: var(--color-signal-blue);
+    border-radius: 9999px;
+    animation: slide 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  @keyframes slide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(250%); }
+  }
+
+  /* Stats Cards Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-card {
+    background: var(--color-paper);
+    border: 1px solid var(--color-hairline);
+    border-radius: 12px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .stat-card strong {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-ink-navy);
+    margin-bottom: 2px;
+  }
+  .stat-card span {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-slate-gray);
+  }
+
+  /* ETA Banner */
+  .eta-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #e6f0ff;
+    border: 1px solid #c2daff;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--color-deep-cobalt);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .eta-banner strong {
+    color: var(--color-signal-blue);
+    font-weight: 700;
+  }
+
+  /* Live Status */
+  .live-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-slate-gray);
+    min-height: 24px;
+    transition: color 0.3s ease;
+  }
+  .live-status.active {
+    color: var(--color-signal-blue);
+    font-weight: 600;
+  }
+
+  .dot-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 10px;
+    height: 10px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-signal-blue);
+  }
+  .dot-ping {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--color-signal-blue);
+    opacity: 0.75;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  @keyframes ping {
+    75%, 100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+
+  /* Footer */
+  .footer-divider {
+    height: 1px;
+    background: var(--color-hairline);
+    margin: 24px 0 20px;
+  }
+
+  .footer {
+    font-size: 12px;
+    color: var(--color-slate-gray);
+    line-height: 1.6;
+  }
+  .footer code {
+    background: var(--color-pebble);
+    border: 1px solid var(--color-hairline);
+    color: var(--color-ink-navy);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+  <!-- Ambient Soft Blobs -->
+  <div class="bg-blob bg-blob-magenta"></div>
+  <div class="bg-blob bg-blob-cyan"></div>
+
+  <div class="card">
+    <div class="brand-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+      Open Waiting Room
+    </div>
+
+    <h1>{{.RoomName}}</h1>
+    {{if .RoomDescription}}<div class="desc">{{.RoomDescription}}</div>{{end}}
+
+    <div class="queue-box">
+      <div class="queue-label">Posisi Antrean Kamu</div>
+      <div class="queue-num">#{{.Position}}</div>
+      <div class="progress-wrap"><div class="progress-bar"></div></div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <strong>{{.TotalQueued}}</strong>
+        <span>Total Antrean</span>
+      </div>
+      <div class="stat-card">
+        <strong>{{.ActiveCount}}</strong>
+        <span>Sedang Aktif</span>
+      </div>
+      <div class="stat-card">
+        <strong>{{if eq .QueueingMethod "random"}}Lottery{{else}}FIFO{{end}}</strong>
+        <span>Metode</span>
+      </div>
+    </div>
+
+    <div class="eta-banner">
+      ⏱ Estimasi tunggu: <strong>{{.EstimatedWait}} detik</strong>
+      {{if gt .EstimatedWaitMin 0}}<span>(~{{.EstimatedWaitMin}} menit)</span>{{end}}
+    </div>
+
+    <div id="live-status" class="live-status">
+      <span class="dot-wrap">
+        <span class="dot-ping"></span>
+        <span class="dot"></span>
+      </span>
+      <span>Memuat status terkini…</span>
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer">
+      Jangan tutup tab ini. Saat giliran tiba, kamu akan otomatis diarahkan.<br>
+      Cookie: <code>__owr_{{.RoomID}}</code> (HttpOnly · SameSite=Lax · HMAC-SHA256)
+    </div>
+  </div>
+
+<script>
+(function () {
+  'use strict';
+  var roomId = {{.RoomID | js}};
+  var baseInterval = {{.RefreshInterval}} * 1000;
+
+  function jitter() {
+    return baseInterval + Math.random() * 2000;
+  }
+
+  function setStatus(text, isActive) {
+    var el = document.getElementById('live-status');
+    if (!el) return;
+    var statusTextEl = el.querySelector('span:last-child');
+    if (statusTextEl) {
+      statusTextEl.textContent = text;
+    } else {
+      el.textContent = text;
+    }
+    if (isActive) el.classList.add('active');
+  }
+
+  async function poll() {
+    try {
+      var res = await fetch('/__owr/waiting-room/status?room_id=' + encodeURIComponent(roomId), {
+        credentials: 'include'
+      });
+      if (!res.ok) {
+        // Non-2xx — session may have been invalidated, hard-reload to re-evaluate.
+        if (res.status === 401 || res.status === 403) {
+          location.reload();
+          return;
+        }
+        throw new Error('status ' + res.status);
+      }
+      var data = await res.json();
+      if (data.is_active) {
+        setStatus('✅ Giliran kamu! Sedang masuk…', true);
+        location.reload();
+        return;
+      }
+      if (data.position !== undefined) {
+        setStatus('⟳ Posisi ' + (data.position + 1) + ' / ' + data.total_queued +
+          ' — eta ' + data.estimated_wait + 's');
+      }
+    } catch (e) {
+      setStatus('⚠ Tidak dapat terhubung, mencoba lagi…');
+    }
+    setTimeout(poll, jitter());
+  }
+
+  // Start polling after initial jitter delay.
+  setTimeout(poll, jitter());
+}());
+</script>
+</body>
+</html>
+

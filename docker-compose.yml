@@ -1,0 +1,158 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Open WR — docker-compose.yml
+#
+#  Profiles:
+#    default         → open-wr + redis (production-like, in-memory for app)
+#    dev             → open-wr only, no redis (fastest local dev)
+#    redis           → open-wr + redis + redis-commander UI
+#
+#  Usage:
+#    make docker-run-redis          # full stack (alias: docker compose up)
+#    docker compose up              # open-wr + redis
+#    docker compose --profile redis-ui up   # + Redis Commander UI
+#    docker compose --profile dev up        # dev mode (in-memory store)
+#
+#  Required env (copy .env.example → .env and fill):
+#    COOKIE_SECRET   — at least 32 characters
+#    ADMIN_KEY       — admin API key (leave blank to disable auth)
+#    ORIGIN          — backend origin URL (default: empty → demo handler)
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: open-wr
+
+# ── Shared healthcheck defaults ───────────────────────────────────────────────
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 10s
+  timeout: 5s
+  retries: 5
+  start_period: 10s
+
+services:
+
+  # ────────────────────────────────────────────────────────────────────────────
+  #  open-wr — edge waiting room (with Redis)
+  # ────────────────────────────────────────────────────────────────────────────
+  open-wr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: open-wr:latest
+    container_name: open-wr
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      OPENWR_LISTEN:          ":8080"
+      OPENWR_ORIGIN:          "${ORIGIN:-}"
+      OPENWR_COOKIE_SECRET:   "${COOKIE_SECRET:?COOKIE_SECRET env var is required}"
+      OPENWR_SECURE_COOKIES:  "${SECURE_COOKIES:-false}"
+      OPENWR_REDIS_ENABLED:   "true"
+      OPENWR_REDIS_ADDR:      "redis:6379"
+      OPENWR_LOG_LEVEL:       "${LOG_LEVEL:-info}"
+      OPENWR_ADMIN_API_KEY:   "${ADMIN_KEY:-}"
+      OPENWR_CORS_ORIGIN:     "${CORS_ORIGIN:-*}"
+    volumes:
+      # Mount custom config if you have one; otherwise the example config bakes in
+      - ./config.example.yaml:/app/config.example.yaml:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "/app/owr", "--healthcheck"]
+    networks:
+      - owr-net
+    labels:
+      com.openwr.service: "edge"
+
+  # ────────────────────────────────────────────────────────────────────────────
+  #  open-wr-dev — dev mode (in-memory store, no Redis dependency)
+  # ────────────────────────────────────────────────────────────────────────────
+  open-wr-dev:
+    profiles: [dev]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: open-wr:latest
+    container_name: open-wr-dev
+    restart: "no"
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      OPENWR_LISTEN:          ":8080"
+      OPENWR_ORIGIN:          "${ORIGIN:-}"
+      OPENWR_COOKIE_SECRET:   "${COOKIE_SECRET:-dev-secret-change-in-production-!!}"
+      OPENWR_SECURE_COOKIES:  "false"
+      OPENWR_REDIS_ENABLED:   "false"
+      OPENWR_LOG_LEVEL:       "debug"
+      OPENWR_ADMIN_API_KEY:   ""
+      OPENWR_CORS_ORIGIN:     "*"
+    volumes:
+      - ./config.example.yaml:/app/config.example.yaml:ro
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "/app/owr", "--healthcheck"]
+    networks:
+      - owr-net
+    labels:
+      com.openwr.service: "edge-dev"
+
+  # ────────────────────────────────────────────────────────────────────────────
+  #  redis — persistent queue & active session store
+  # ────────────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: open-wr-redis
+    restart: unless-stopped
+    # Disable persistence for pure cache usage (faster, no disk writes).
+    # Remove this command to enable AOF/RDB persistence.
+    command: >
+      redis-server
+      --save ""
+      --appendonly no
+      --maxmemory "${REDIS_MAX_MEMORY:-256mb}"
+      --maxmemory-policy allkeys-lru
+      --loglevel notice
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "redis-cli", "ping"]
+    networks:
+      - owr-net
+    labels:
+      com.openwr.service: "redis"
+
+  # ────────────────────────────────────────────────────────────────────────────
+  #  redis-commander — web UI for Redis (profile: redis-ui)
+  # ────────────────────────────────────────────────────────────────────────────
+  redis-commander:
+    profiles: [redis-ui]
+    image: rediscommander/redis-commander:latest
+    container_name: open-wr-redis-ui
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: "local:redis:6379"
+      HTTP_USER:   "${REDIS_UI_USER:-admin}"
+      HTTP_PASSWORD: "${REDIS_UI_PASSWORD:-admin}"
+    ports:
+      - "${REDIS_UI_PORT:-8081}:8081"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - owr-net
+    labels:
+      com.openwr.service: "redis-ui"
+
+# ── Volumes ───────────────────────────────────────────────────────────────────
+volumes:
+  redis-data:
+    driver: local
+
+# ── Networks ──────────────────────────────────────────────────────────────────
+networks:
+  owr-net:
+    driver: bridge

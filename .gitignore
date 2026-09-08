@@ -1,0 +1,117 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Open WR — .gitignore
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Build artifacts ───────────────────────────────────────────────────────────
+/bin/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# ── Go toolchain ──────────────────────────────────────────────────────────────
+# Test coverage
+coverage.out
+coverage.html
+*.coverprofile
+
+# Go workspace (Go 1.18+)
+go.work
+go.work.sum
+
+# Vendor (only ignore if you don't commit vendor)
+# vendor/
+
+# ── Environment & Secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+
+# ── Config overrides (keep example, ignore real) ──────────────────────────────
+config.yaml
+config.yml
+config.local.yaml
+config.local.yml
+# Never ignore config.example.yaml — that one is committed
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+# Docker volumes data (if mounted locally)
+.docker/
+data/
+
+# ── OS artifacts ──────────────────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ── Editor & IDE ──────────────────────────────────────────────────────────────
+# VSCode
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# JetBrains (GoLand, IntelliJ)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Vim / Neovim
+*.swp
+*.swo
+*.swn
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+Session.vim
+.netrwhist
+tags
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ── Profiling ─────────────────────────────────────────────────────────────────
+*.prof
+cpu.prof
+mem.prof
+trace.out
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Temporary test cookies (load test) ────────────────────────────────────────
+/tmp/owr_c*
