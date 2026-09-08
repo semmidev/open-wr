@@ -17,7 +17,7 @@ Simulasi ini terdiri dari 3 layanan container Docker:
 
 1. Masuk ke direktori `demo`:
    ```bash
-   cd demo
+   cd demo/flash-sale
    ```
 
 2. Jalankan seluruh layanan via Docker Compose:
