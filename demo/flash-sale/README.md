@@ -1,6 +1,6 @@
 # Open WR — Demo Simulation
 
-Panduan ini menjelaskan cara menjalankan simulasi antrean virtual Open WR dengan aplikasi web target bergaya **Claude Design System** (Warm Parchment Edition).
+simulasi antrean virtual Open WR dengan aplikasi web sederhana
 
 ---
 
