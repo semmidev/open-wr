@@ -10,24 +10,26 @@
 </noscript>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;580&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* Calendly Design System Tokens */
-    --color-ink-navy: #0b3558;
-    --color-signal-blue: #006bff;
-    --color-slate-gray: #476788;
-    --color-mist-gray: #a6bbd1;
-    --color-cloud: #f8f9fb;
-    --color-paper: #ffffff;
-    --color-pebble: #f0f3f8;
-    --color-hairline: #d4e0ed;
-    --color-coral-magenta: #e55cff;
-    --color-sky-cyan: #0099ff;
-    --color-deep-cobalt: #004eba;
-    --font-family: 'Manrope', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --shadow-card: rgba(71, 103, 136, 0.04) 0px 4px 5px 0px, rgba(71, 103, 136, 0.03) 0px 8px 15px 0px, rgba(71, 103, 136, 0.08) 0px 30px 50px 0px;
-    --shadow-inner: rgba(71, 103, 136, 0.04) 0px 4px 5px 0px, rgba(71, 103, 136, 0.03) 0px 4px 10px 0px;
+    /* Claude Design System Tokens */
+    --color-bone-parchment: #f8f8f6;
+    --color-paper-white: #ffffff;
+    --color-soft-stone: #efeeeb;
+    --color-carbon-ink: #121212;
+    --color-graphite: #373734;
+    --color-ashen: #7b7974;
+    --color-pebble: #9c9a92;
+    --color-mist: #b7b7b5;
+    --color-chalk: #e7e6e1;
+    --color-clay: #d97757;
+    
+    --font-serif: 'Source Serif 4', Georgia, Cambria, "Times New Roman", serif;
+    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    
+    --shadow-soft: rgba(0, 0, 0, 0.04) 0px 4px 20px 0px;
+    --shadow-hover: rgba(0, 0, 0, 0.06) 0px 8px 30px 0px;
   }
 
   *, *::before, *::after {
@@ -41,122 +43,99 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-family);
-    background-color: var(--color-cloud);
-    color: var(--color-ink-navy);
-    padding: 24px 16px;
+    font-family: var(--font-sans);
+    background-color: var(--color-bone-parchment);
+    color: var(--color-carbon-ink);
+    padding: 32px 16px;
     position: relative;
-    overflow-x: hidden;
   }
 
-  /* Decorative Ambient Blobs (Calendly Signature Collages) */
-  .bg-blob {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(90px);
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.45;
-  }
-  .bg-blob-magenta {
-    width: 380px;
-    height: 380px;
-    background: var(--color-coral-magenta);
-    top: -100px;
-    left: -100px;
-  }
-  .bg-blob-cyan {
-    width: 420px;
-    height: 420px;
-    background: var(--color-sky-cyan);
-    bottom: -120px;
-    right: -120px;
-  }
-
-  /* Main Floating Product Card */
+  /* Main Elevated Parchment Card */
   .card {
     position: relative;
-    z-index: 1;
-    background: var(--color-paper);
-    border: 1px solid var(--color-hairline);
+    background: var(--color-paper-white);
+    border: 1px solid var(--color-chalk);
     border-radius: 24px;
-    box-shadow: var(--shadow-card);
-    max-width: 540px;
+    box-shadow: var(--shadow-soft);
+    max-width: 520px;
     width: 100%;
     padding: 44px 36px 36px;
     text-align: center;
   }
 
   /* Top Brand Header */
-  .brand-badge {
+  .brand-header {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: #e6f0ff;
-    color: var(--color-deep-cobalt);
+    gap: 8px;
     font-size: 12px;
-    font-weight: 600;
-    padding: 5px 14px;
-    border-radius: 9999px;
+    font-weight: 500;
+    color: var(--color-graphite);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     margin-bottom: 24px;
-    letter-spacing: 0.3px;
-  }
-  .brand-badge svg {
-    width: 14px;
-    height: 14px;
-    fill: currentColor;
   }
 
+  .clay-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--color-clay);
+    display: inline-block;
+  }
+
+  /* Editorial Headline (Serif Signature) */
   h1 {
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.25;
-    color: var(--color-ink-navy);
-    margin-bottom: 10px;
-    letter-spacing: -0.02em;
+    font-family: var(--font-serif);
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--color-carbon-ink);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
   }
 
   .desc {
-    color: var(--color-slate-gray);
+    color: var(--color-ashen);
     font-size: 15px;
-    line-height: 1.55;
-    margin-bottom: 28px;
+    line-height: 1.5;
+    margin-bottom: 32px;
     font-weight: 400;
   }
 
-  /* Queue Position Inner Box */
+  /* Queue Position Nested Box (Soft Stone) */
   .queue-box {
-    background: var(--color-pebble);
-    border: 1px solid var(--color-hairline);
+    background: var(--color-soft-stone);
+    border: 1px solid var(--color-chalk);
     border-radius: 16px;
-    padding: 24px 20px;
+    padding: 28px 24px;
     margin-bottom: 24px;
-    box-shadow: var(--shadow-inner);
   }
 
   .queue-label {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--color-slate-gray);
+    color: var(--color-ashen);
     margin-bottom: 8px;
   }
 
   .queue-num {
+    font-family: var(--font-sans);
     font-size: 64px;
-    font-weight: 800;
+    font-weight: 580;
     line-height: 1;
-    color: var(--color-signal-blue);
-    margin: 4px 0 16px;
+    color: var(--color-carbon-ink);
+    margin: 4px 0 20px;
     letter-spacing: -0.03em;
   }
 
-  /* Smooth Progress Bar */
+  /* Smooth Warm Progress Bar */
   .progress-wrap {
-    background: #d4e0ed;
+    background: var(--color-chalk);
     border-radius: 9999px;
-    height: 8px;
+    height: 6px;
     overflow: hidden;
     margin: 0 auto;
     max-width: 100%;
@@ -164,22 +143,22 @@
   }
   .progress-bar {
     height: 100%;
-    width: 50%;
-    background: var(--color-signal-blue);
+    width: 45%;
+    background: var(--color-carbon-ink);
     border-radius: 9999px;
-    animation: slide 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation: slide 2.4s ease-in-out infinite;
   }
   @keyframes slide {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(250%); }
   }
 
-  /* Stats Cards Grid */
+  /* Stats Grid (Nested Flat Cards) */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
   @media (max-width: 480px) {
     .stats-grid {
@@ -188,8 +167,8 @@
   }
 
   .stat-card {
-    background: var(--color-paper);
-    border: 1px solid var(--color-hairline);
+    background: var(--color-bone-parchment);
+    border: 1px solid var(--color-chalk);
     border-radius: 12px;
     padding: 12px 10px;
     text-align: center;
@@ -197,14 +176,14 @@
   .stat-card strong {
     display: block;
     font-size: 18px;
-    font-weight: 700;
-    color: var(--color-ink-navy);
+    font-weight: 580;
+    color: var(--color-carbon-ink);
     margin-bottom: 2px;
   }
   .stat-card span {
     font-size: 12px;
-    font-weight: 500;
-    color: var(--color-slate-gray);
+    font-weight: 400;
+    color: var(--color-ashen);
   }
 
   /* ETA Banner */
@@ -213,18 +192,18 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: #e6f0ff;
-    border: 1px solid #c2daff;
-    border-radius: 10px;
+    background: var(--color-soft-stone);
+    border: 1px solid var(--color-chalk);
+    border-radius: 8px;
     padding: 12px 16px;
     font-size: 14px;
-    color: var(--color-deep-cobalt);
-    margin-bottom: 20px;
-    font-weight: 500;
+    color: var(--color-graphite);
+    margin-bottom: 24px;
+    font-weight: 400;
   }
   .eta-banner strong {
-    color: var(--color-signal-blue);
-    font-weight: 700;
+    color: var(--color-carbon-ink);
+    font-weight: 580;
   }
 
   /* Live Status */
@@ -234,62 +213,45 @@
     justify-content: center;
     gap: 8px;
     font-size: 13px;
-    font-weight: 500;
-    color: var(--color-slate-gray);
+    font-weight: 400;
+    color: var(--color-ashen);
     min-height: 24px;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
   }
   .live-status.active {
-    color: var(--color-signal-blue);
-    font-weight: 600;
+    color: var(--color-carbon-ink);
+    font-weight: 500;
   }
 
-  .dot-wrap {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 10px;
-    height: 10px;
-  }
-  .dot {
-    width: 8px;
-    height: 8px;
+  .indicator-dot {
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: var(--color-signal-blue);
+    background-color: var(--color-clay);
+    display: inline-block;
+    animation: pulse-clay 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-  .dot-ping {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: var(--color-signal-blue);
-    opacity: 0.75;
-    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
-  }
-  @keyframes ping {
-    75%, 100% {
-      transform: scale(2.2);
-      opacity: 0;
-    }
+  @keyframes pulse-clay {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(1.2); }
   }
 
   /* Footer */
   .footer-divider {
     height: 1px;
-    background: var(--color-hairline);
-    margin: 24px 0 20px;
+    background: var(--color-chalk);
+    margin: 28px 0 20px;
   }
 
   .footer {
     font-size: 12px;
-    color: var(--color-slate-gray);
+    color: var(--color-ashen);
     line-height: 1.6;
   }
   .footer code {
-    background: var(--color-pebble);
-    border: 1px solid var(--color-hairline);
-    color: var(--color-ink-navy);
+    background: var(--color-soft-stone);
+    border: 1px solid var(--color-chalk);
+    color: var(--color-graphite);
     padding: 2px 6px;
     border-radius: 4px;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -298,14 +260,10 @@
 </style>
 </head>
 <body>
-  <!-- Ambient Soft Blobs -->
-  <div class="bg-blob bg-blob-magenta"></div>
-  <div class="bg-blob bg-blob-cyan"></div>
-
   <div class="card">
-    <div class="brand-badge">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
-      Open Waiting Room
+    <div class="brand-header">
+      <span class="clay-dot"></span>
+      <span>Open Waiting Room</span>
     </div>
 
     <h1>{{.RoomName}}</h1>
@@ -338,10 +296,7 @@
     </div>
 
     <div id="live-status" class="live-status">
-      <span class="dot-wrap">
-        <span class="dot-ping"></span>
-        <span class="dot"></span>
-      </span>
+      <span class="indicator-dot"></span>
       <span>Memuat status terkini…</span>
     </div>
 
@@ -410,4 +365,5 @@
 </script>
 </body>
 </html>
+
 

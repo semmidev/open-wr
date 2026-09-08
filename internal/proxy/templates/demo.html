@@ -6,102 +6,85 @@
   <title>Origin Demo — Open WR</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;580&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --color-ink-navy: #0b3558;
-      --color-signal-blue: #006bff;
-      --color-slate-gray: #476788;
-      --color-cloud: #f8f9fb;
-      --color-paper: #ffffff;
-      --color-pebble: #f0f3f8;
-      --color-hairline: #d4e0ed;
-      --color-coral-magenta: #e55cff;
-      --color-sky-cyan: #0099ff;
-      --font-family: 'Manrope', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      --shadow-card: rgba(71, 103, 136, 0.04) 0px 4px 5px 0px, rgba(71, 103, 136, 0.03) 0px 8px 15px 0px, rgba(71, 103, 136, 0.08) 0px 30px 50px 0px;
+      /* Claude Design System Tokens */
+      --color-bone-parchment: #f8f8f6;
+      --color-paper-white: #ffffff;
+      --color-soft-stone: #efeeeb;
+      --color-carbon-ink: #121212;
+      --color-graphite: #373734;
+      --color-ashen: #7b7974;
+      --color-chalk: #e7e6e1;
+      --color-clay: #d97757;
+      --font-serif: 'Source Serif 4', Georgia, Cambria, "Times New Roman", serif;
+      --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --shadow-soft: rgba(0, 0, 0, 0.04) 0px 4px 20px 0px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: var(--font-family);
-      background: var(--color-cloud);
-      color: var(--color-ink-navy);
+      font-family: var(--font-sans);
+      background: var(--color-bone-parchment);
+      color: var(--color-carbon-ink);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 32px 16px;
       position: relative;
-      overflow-x: hidden;
-    }
-
-    /* Ambient Decorative Blobs */
-    .bg-blob {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(90px);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
-    .bg-blob-magenta {
-      width: 360px;
-      height: 360px;
-      background: var(--color-coral-magenta);
-      top: -80px;
-      right: -80px;
-    }
-    .bg-blob-cyan {
-      width: 400px;
-      height: 400px;
-      background: var(--color-sky-cyan);
-      bottom: -100px;
-      left: -100px;
     }
 
     .card {
       position: relative;
-      z-index: 1;
-      background: var(--color-paper);
-      border: 1px solid var(--color-hairline);
+      background: var(--color-paper-white);
+      border: 1px solid var(--color-chalk);
       border-radius: 24px;
       padding: 44px 36px;
       max-width: 520px;
       width: 100%;
-      box-shadow: var(--shadow-card);
+      box-shadow: var(--shadow-soft);
       text-align: center;
     }
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 16px;
-      background: #e6f7ed;
-      color: #0d8a4f;
-      border: 1px solid #bcead0;
-      border-radius: 9999px;
-      font-size: 13px;
-      font-weight: 600;
+      padding: 6px 14px;
+      background: var(--color-soft-stone);
+      color: var(--color-carbon-ink);
+      border: 1px solid var(--color-chalk);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
       margin-bottom: 24px;
     }
+    .clay-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--color-clay);
+      display: inline-block;
+    }
     h1 {
-      font-size: 28px;
-      font-weight: 700;
-      line-height: 1.25;
-      color: var(--color-ink-navy);
+      font-family: var(--font-serif);
+      font-size: 30px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--color-carbon-ink);
       margin-bottom: 12px;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
     }
     p {
-      color: var(--color-slate-gray);
+      color: var(--color-ashen);
       line-height: 1.6;
       font-size: 15px;
       margin-bottom: 20px;
     }
     code {
-      background: var(--color-pebble);
-      border: 1px solid var(--color-hairline);
-      color: var(--color-ink-navy);
+      background: var(--color-soft-stone);
+      border: 1px solid var(--color-chalk);
+      color: var(--color-graphite);
       padding: 3px 8px;
       border-radius: 6px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -110,30 +93,25 @@
     .btn {
       display: inline-block;
       margin-top: 12px;
-      padding: 12px 24px;
-      background: var(--color-signal-blue);
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 600;
+      padding: 10px 24px;
+      background: var(--color-carbon-ink);
+      color: var(--color-bone-parchment);
+      font-size: 14px;
+      font-weight: 500;
       text-decoration: none;
       border-radius: 8px;
-      transition: background-color 0.15s ease, transform 0.15s ease;
-      box-shadow: rgba(71, 103, 136, 0.04) 0px 4px 5px 0px, rgba(71, 103, 136, 0.06) 0px 15px 30px 0px;
+      transition: opacity 0.15s ease, transform 0.15s ease;
     }
     .btn:hover {
-      background: #0056cc;
+      opacity: 0.88;
       transform: translateY(-1px);
     }
   </style>
 </head>
 <body>
-  <!-- Ambient Soft Blobs -->
-  <div class="bg-blob bg-blob-magenta"></div>
-  <div class="bg-blob bg-blob-cyan"></div>
-
   <div class="card">
     <div class="badge">
-      <span>✓</span> Access Granted
+      <span class="clay-dot"></span> Access Granted
     </div>
     <h1>Origin Demo Server</h1>
     <p>Selamat! Kamu telah berhasil melewati <strong>Open WR (Open Source Waiting Room)</strong> dan mengakses origin server.</p>
@@ -142,4 +120,5 @@
   </div>
 </body>
 </html>
+
 
