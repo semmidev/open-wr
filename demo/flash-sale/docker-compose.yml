@@ -12,8 +12,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./config.yaml:/app/config.yaml:ro
-    command: ["--config", "config.yaml"]
+      - ./config-demo.yaml:/app/config-demo.yaml:ro
+    command: ["--config", "config-demo.yaml"]
     depends_on:
       redis:
         condition: service_healthy

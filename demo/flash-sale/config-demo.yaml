@@ -1,0 +1,43 @@
+server:
+  listen: ":8080"
+  origin: "http://demo-app:3000"
+  cookie_secret: "demo-secret-key-must-be-at-least-32-chars!!"
+  secure_cookies: false
+  redis_addr: "redis:6379"
+  redis_enabled: true
+  log_level: "info"
+  admin_api_key: "demo-admin-key"
+  cors_origin: "*"
+
+rooms:
+  - id: "flash_sale"
+    name: "Pro Laptop M4 Ultra Flash Sale"
+    description: "Antrean Virtual Flash Sale Laptop & Gadget Edisi Spesial"
+    path: "/flash/*"
+    host: ""
+    enabled: true
+    queue_all: false
+    new_users_per_minute: 60
+    total_active_users: 3
+    session_duration_minutes: 1
+    queueing_method: "fifo"
+    cookie_name: "__owr"
+    custom_page_template: ""
+    disable_session_renewal: false
+    json_response_enabled: false
+
+  - id: "ticket_war"
+    name: "VIP Concert Ticket War"
+    description: "Antrean Pre-Order Tiket Konser VIP (Lottery Queue Anti-Bot)"
+    path: "/concert/*"
+    host: ""
+    enabled: true
+    queue_all: true
+    new_users_per_minute: 12
+    total_active_users: 2
+    session_duration_minutes: 1
+    queueing_method: "random"
+    cookie_name: "__owr"
+    custom_page_template: ""
+    disable_session_renewal: false
+    json_response_enabled: false

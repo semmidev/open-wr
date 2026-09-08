@@ -1,13 +1,13 @@
 # Open WR — Demo Simulation
 
-simulasi antrean virtual Open WR dengan aplikasi web sederhana
+Simulasi antrean virtual Open WR dengan aplikasi web target Go.
 
 ---
 
 ## 🏗️ Komponen Demo
 
 Simulasi ini terdiri dari 3 layanan container Docker:
-1. **`open-wr`**: Waiting Room Edge Reverse Proxy (menggunakan image Docker Hub [`sammidev/open-wr:latest`](https://hub.docker.com/r/sammidev/open-wr)). Port: `8080`.
+1. **`open-wr`**: Waiting Room Edge Reverse Proxy (menggunakan image Docker Hub [`sammidev/open-wr:latest`](https://hub.docker.com/r/sammidev/open-wr) & `config-demo.yaml`). Port: `8080`.
 2. **`demo-app`**: Aplikasi web target yang ditulis dalam Go (`main.go`). Port: `3000`.
 3. **`redis`**: Store antrean & status sesi terdistribusi (`redis:7-alpine`). Port: `6379`.
 
@@ -15,14 +15,16 @@ Simulasi ini terdiri dari 3 layanan container Docker:
 
 ## 🚀 Cara Menjalankan Simulasi
 
-1. Masuk ke direktori `demo`:
+1. Masuk ke direktori `demo/flash-sale`:
    ```bash
    cd demo/flash-sale
    ```
 
-2. Jalankan seluruh layanan via Docker Compose:
+2. Jalankan seluruh layanan via Podman / Docker Compose:
    ```bash
-   docker compose up -d --build
+   podman compose up -d --build
+   # atau jika menggunakan docker-compose:
+   # docker compose up -d --build
    ```
 
 3. Akses melalui browser:
@@ -31,20 +33,31 @@ Simulasi ini terdiri dari 3 layanan container Docker:
 
 ---
 
-## 🧪 Menguji Simulasi Antrean
+## 🧪 Simulasi Antrean Realtime (Terminal & Browser)
 
-Open WR telah dikonfigurasi (`config.yaml`) dengan dua waiting room:
+Open WR telah dikonfigurasi (`config-demo.yaml`) dengan pengaturan durasi sesi cepat (1 menit) untuk keperluan simulasi:
 
-### 1. Flash Sale Room (`/flash/*`)
-- **URL**: [http://localhost:8080/flash/checkout](http://localhost:8080/flash/checkout)
-- **Kapasitas Aktif**: Max 5 user bersamaan (`total_active_users: 5`).
-- **Pelepasan**: 120 user / menit (`queueing_method: fifo`).
+- **VIP Concert Ticket War (`/concert/*`)**:
+  - `total_active_users: 2` (Kapasitas maksimal 2 user bersamaan)
+  - `session_duration_minutes: 1` (Durasi sesi 1 menit)
+  - `queue_all: true` (Semua pengunjung baru wajib antre)
 
-### 2. VIP Concert Ticket War (`/concert/*`)
-- **URL**: [http://localhost:8080/concert/tickets](http://localhost:8080/concert/tickets)
-- **Kapasitas Aktif**: Max 3 user bersamaan (`total_active_users: 3`).
-- **Pelepasan**: 60 user / menit (`queueing_method: random` / lottery).
-- **Behavior**: `queue_all: true` (semua pengunjung wajib masuk antrean sebelum masuk room).
+### Langkah Simulasi:
+
+1. **Buka 1 Tab Browser (Incognito)** dan kunjungi:
+   [http://localhost:8080/concert/tickets](http://localhost:8080/concert/tickets)
+   *Browser Anda akan masuk ke halaman Waiting Room Open WR.*
+
+2. **Jalankan Script Simulasi 7 Client di Terminal**:
+   ```bash
+   for i in {1..7}; do
+     curl -s -o /dev/null -w "User $i -> Status Code: %{http_code}\n" http://localhost:8080/concert/tickets &
+   done
+   ```
+
+3. **Perhatikan Perilaku Antrean**:
+   - Terminal akan memicu 7 request pengunjuk rasa secara bersamaan yang mengisi slot antrean.
+   - Browser Anda yang sedang membuka halaman Waiting Room akan otomatis memperbarui posisi antrean dan me-redirect Anda begitu slot aktif kosong dalam 1 menit!
 
 ---
 
@@ -52,9 +65,6 @@ Open WR telah dikonfigurasi (`config.yaml`) dengan dua waiting room:
 
 Cek status room secara langsung via curl:
 ```bash
-# Cek status room flash_sale
-curl -H "X-API-Key: demo-admin-key" http://localhost:8080/api/rooms/flash_sale
-
-# Cek status room ticket_war
-curl -H "X-API-Key: demo-admin-key" http://localhost:8080/api/rooms/ticket_war
+# Cek status room ticket_war (antrean & user aktif)
+curl -s -H "X-API-Key: demo-admin-key" http://localhost:8080/api/rooms/ticket_war
 ```
