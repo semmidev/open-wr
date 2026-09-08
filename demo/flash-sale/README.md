@@ -8,7 +8,7 @@ simulasi antrean virtual Open WR dengan aplikasi web sederhana
 
 Simulasi ini terdiri dari 3 layanan container Docker:
 1. **`open-wr`**: Waiting Room Edge Reverse Proxy (menggunakan image Docker Hub [`sammidev/open-wr:latest`](https://hub.docker.com/r/sammidev/open-wr)). Port: `8080`.
-2. **`demo-app`**: Aplikasi web target yang ditulis dalam Go (`main.go`) dengan tampilan UI Claude Design System (`Source Serif 4`, `#f8f8f6` parchment background, `#121212` text). Port: `3000`.
+2. **`demo-app`**: Aplikasi web target yang ditulis dalam Go (`main.go`). Port: `3000`.
 3. **`redis`**: Store antrean & status sesi terdistribusi (`redis:7-alpine`). Port: `6379`.
 
 ---
@@ -22,7 +22,7 @@ Simulasi ini terdiri dari 3 layanan container Docker:
 
 2. Jalankan seluruh layanan via Docker Compose:
    ```bash
-   docker compose up --build
+   docker compose up -d --build
    ```
 
 3. Akses melalui browser:
