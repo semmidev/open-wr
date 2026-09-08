@@ -41,7 +41,6 @@ archives:
       - LICENSE
       - config.example.yaml
       - docker-compose.yml
-      - .env.example
 
 checksum:
   name_template: "checksums.txt"

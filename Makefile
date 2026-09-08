@@ -226,11 +226,6 @@ docker-down-v: ## Stop and remove compose containers + volumes (DELETES REDIS DA
 	docker compose down -v
 	@printf "$(YELLOW)⚠ Redis volume deleted$(RESET)\n"
 
-.PHONY: env-init
-env-init: ## Copy .env.example to .env (only if .env does not exist)
-	@test -f .env && printf "$(YELLOW).env already exists — skipping$(RESET)\n" || \
-		(cp .env.example .env && printf "$(GREEN)✓ .env created from .env.example$(RESET) — fill in COOKIE_SECRET!\n")
-
 # ─────────────────────────────────────────────────────────────────────────────
 #  Module Management
 # ─────────────────────────────────────────────────────────────────────────────

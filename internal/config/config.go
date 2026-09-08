@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -50,7 +49,7 @@ type Config struct {
 
 const minSecretLen = 32
 
-// Load reads the YAML config at path, applies defaults, overrides from env, then validates.
+// Load reads the YAML config at path, applies defaults, then validates.
 func Load(path string) (*Config, error) {
 	f, err := os.Open(path) // #nosec G304 -- config path is explicitly provided by user flag
 	if err != nil {
@@ -64,7 +63,6 @@ func Load(path string) (*Config, error) {
 	}
 
 	applyDefaults(&c)
-	overrideFromEnv(&c)
 
 	if err := c.Validate(); err != nil {
 		return nil, fmt.Errorf("config validation: %w", err)
@@ -106,45 +104,13 @@ func applyDefaults(c *Config) {
 	}
 }
 
-// overrideFromEnv applies environment variable overrides for 12-factor compliance.
-// Env vars take precedence over YAML values.
-func overrideFromEnv(c *Config) {
-	if v := os.Getenv("OPENWR_LISTEN"); v != "" {
-		c.Server.Listen = v
-	}
-	if v := os.Getenv("OPENWR_ORIGIN"); v != "" {
-		c.Server.Origin = v
-	}
-	if v := os.Getenv("OPENWR_COOKIE_SECRET"); v != "" {
-		c.Server.CookieSecret = v
-	}
-	if v := os.Getenv("OPENWR_REDIS_ADDR"); v != "" {
-		c.Server.RedisAddr = v
-	}
-	if v := os.Getenv("OPENWR_REDIS_ENABLED"); v != "" {
-		c.Server.RedisEnabled = strings.EqualFold(v, "true") || v == "1"
-	}
-	if v := os.Getenv("OPENWR_LOG_LEVEL"); v != "" {
-		c.Server.LogLevel = v
-	}
-	if v := os.Getenv("OPENWR_ADMIN_API_KEY"); v != "" {
-		c.Server.AdminAPIKey = v
-	}
-	if v := os.Getenv("OPENWR_CORS_ORIGIN"); v != "" {
-		c.Server.CORSOrigin = v
-	}
-	if v := os.Getenv("OPENWR_SECURE_COOKIES"); v != "" {
-		c.Server.SecureCookies, _ = strconv.ParseBool(v)
-	}
-}
-
 // Validate checks for configuration correctness.
 func (c *Config) Validate() error {
 	var errs []string
 
 	if len(c.Server.CookieSecret) < minSecretLen {
 		errs = append(errs, fmt.Sprintf(
-			"server.cookie_secret must be at least %d characters (got %d); set OPENWR_COOKIE_SECRET env var",
+			"server.cookie_secret must be at least %d characters (got %d); set cookie_secret in config YAML file",
 			minSecretLen, len(c.Server.CookieSecret),
 		))
 	}

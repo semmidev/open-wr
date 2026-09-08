@@ -2,7 +2,7 @@
 #  Open WR — docker-compose.yml
 #
 #  Profiles:
-#    default         → open-wr + redis (production-like, in-memory for app)
+#    default         → open-wr + redis (production-like, using config file)
 #    dev             → open-wr only, no redis (fastest local dev)
 #    redis           → open-wr + redis + redis-commander UI
 #
@@ -10,12 +10,7 @@
 #    make docker-run-redis          # full stack (alias: docker compose up)
 #    docker compose up              # open-wr + redis
 #    docker compose --profile redis-ui up   # + Redis Commander UI
-#    docker compose --profile dev up        # dev mode (in-memory store)
-#
-#  Required env (copy .env.example → .env and fill):
-#    COOKIE_SECRET   — at least 32 characters
-#    ADMIN_KEY       — admin API key (leave blank to disable auth)
-#    ORIGIN          — backend origin URL (default: empty → demo handler)
+#    docker compose --profile dev up        # dev mode
 # ─────────────────────────────────────────────────────────────────────────────
 
 name: open-wr
@@ -41,18 +36,8 @@ services:
     restart: unless-stopped
     ports:
       - "${PORT:-8080}:8080"
-    environment:
-      OPENWR_LISTEN:          ":8080"
-      OPENWR_ORIGIN:          "${ORIGIN:-}"
-      OPENWR_COOKIE_SECRET:   "${COOKIE_SECRET:?COOKIE_SECRET env var is required}"
-      OPENWR_SECURE_COOKIES:  "${SECURE_COOKIES:-false}"
-      OPENWR_REDIS_ENABLED:   "true"
-      OPENWR_REDIS_ADDR:      "redis:6379"
-      OPENWR_LOG_LEVEL:       "${LOG_LEVEL:-info}"
-      OPENWR_ADMIN_API_KEY:   "${ADMIN_KEY:-}"
-      OPENWR_CORS_ORIGIN:     "${CORS_ORIGIN:-*}"
     volumes:
-      # Mount custom config if you have one; otherwise the example config bakes in
+      # Mount config file into container
       - ./config.example.yaml:/app/config.example.yaml:ro
     depends_on:
       redis:
@@ -78,15 +63,6 @@ services:
     restart: "no"
     ports:
       - "${PORT:-8080}:8080"
-    environment:
-      OPENWR_LISTEN:          ":8080"
-      OPENWR_ORIGIN:          "${ORIGIN:-}"
-      OPENWR_COOKIE_SECRET:   "${COOKIE_SECRET:-dev-secret-change-in-production-!!}"
-      OPENWR_SECURE_COOKIES:  "false"
-      OPENWR_REDIS_ENABLED:   "false"
-      OPENWR_LOG_LEVEL:       "debug"
-      OPENWR_ADMIN_API_KEY:   ""
-      OPENWR_CORS_ORIGIN:     "*"
     volumes:
       - ./config.example.yaml:/app/config.example.yaml:ro
     healthcheck:

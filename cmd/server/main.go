@@ -13,7 +13,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/joho/godotenv"
 
 	"github.com/semmidev/wr/internal/api"
 	"github.com/semmidev/wr/internal/config"
@@ -35,8 +34,6 @@ var (
 )
 
 func main() {
-	_ = godotenv.Load() // best-effort .env loading; ignore error if file absent
-
 	configPath := flag.String("config", "config.example.yaml", "path to config YAML file")
 	showVersion := flag.Bool("version", false, "print version information and exit")
 	healthcheck := flag.Bool("healthcheck", false, "perform internal healthcheck request to localhost and exit")
@@ -48,9 +45,9 @@ func main() {
 	}
 
 	if *healthcheck {
-		port := os.Getenv("OPENWR_LISTEN")
-		if port == "" {
-			port = ":8080"
+		port := ":8080"
+		if cfg, err := config.Load(*configPath); err == nil && cfg.Server.Listen != "" {
+			port = cfg.Server.Listen
 		}
 		if len(port) > 0 && port[0] == ':' {
 			port = "127.0.0.1" + port
@@ -89,7 +86,7 @@ func main() {
 
 	// Warn if admin API is unprotected.
 	if cfg.Server.AdminAPIKey == "" {
-		logger.Warn("admin API is unprotected — set admin_api_key or OPENWR_ADMIN_API_KEY in production")
+		logger.Warn("admin API is unprotected — set admin_api_key in config YAML file for production")
 	}
 
 	// --- Store ---

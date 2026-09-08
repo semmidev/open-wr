@@ -35,7 +35,7 @@
   - [6. Konfigurasi](#6-konfigurasi)
     - [Server Config](#server-config)
     - [Room Config](#room-config)
-    - [Environment Variables (12-Factor)](#environment-variables-12-factor)
+    - [Struktur Konfigurasi YAML](#struktur-konfigurasi-yaml)
   - [7. Quick Start](#7-quick-start)
     - [Jalankan (tanpa Redis)](#jalankan-tanpa-redis)
     - [Jalankan dengan Redis](#jalankan-dengan-redis)
@@ -164,7 +164,7 @@ HTTP Request
 | Komponen | Package | Tanggung Jawab |
 |----------|---------|----------------|
 | **Entry point** | `cmd/server` | Wiring semua komponen, graceful shutdown |
-| **Config** | `internal/config` | Load YAML, env var override, validasi |
+| **Config** | `internal/config` | Load YAML config & validasi |
 | **Cookie Signer** | `internal/cookie` | HMAC-SHA256 sign & verify, typed errors |
 | **Store** | `internal/room` | Interface + MemStore + RedisStore |
 | **Service** | `internal/waitingroom` | Core decision logic (admit/queue/bypass) |
@@ -490,21 +490,9 @@ rooms:
     json_response_enabled: false        # true = 202 JSON untuk API client
 ```
 
-### Environment Variables (12-Factor)
+### Konfigurasi Berbasis YAML
 
-Semua config bisa di-override via env var — ideal untuk Kubernetes, Fly.io, Docker secrets:
-
-| Env Var | Config Field | Contoh |
-|---------|-------------|--------|
-| `OPENWR_LISTEN` | `server.listen` | `:9090` |
-| `OPENWR_ORIGIN` | `server.origin` | `http://backend:3000` |
-| `OPENWR_COOKIE_SECRET` | `server.cookie_secret` | `your-32-char-secret!!` |
-| `OPENWR_SECURE_COOKIES` | `server.secure_cookies` | `true` |
-| `OPENWR_REDIS_ADDR` | `server.redis_addr` | `redis:6379` |
-| `OPENWR_REDIS_ENABLED` | `server.redis_enabled` | `true` |
-| `OPENWR_LOG_LEVEL` | `server.log_level` | `debug` |
-| `OPENWR_ADMIN_API_KEY` | `server.admin_api_key` | `s3cr3t-k3y` |
-| `OPENWR_CORS_ORIGIN` | `server.cors_origin` | `https://app.example.com` |
+Seluruh pengaturan aplikasi disimpan dan dibaca secara eksklusif dari berkas `config.yaml` (contoh: `config.example.yaml`), tanpa bergantung pada berkas `.env`.
 
 ---
 
@@ -724,12 +712,12 @@ Open WR menyertakan `docker-compose.yml` dengan beberapa **profile** yang bisa d
 **Setup pertama kali:**
 
 ```bash
-# 1. Salin env template
-make env-init        # atau: cp .env.example .env
+# 1. Salin template konfigurasi
+cp config.example.yaml config.yaml
 
-# 2. Isi COOKIE_SECRET (wajib, min 32 char)
+# 2. Isi cookie_secret pada config.yaml (wajib, min 32 char)
 #    Generate: openssl rand -base64 32
-vi .env
+vi config.yaml
 
 # 3. Jalankan (open-wr + Redis)
 docker compose up -d
@@ -743,18 +731,6 @@ make docker-dev         # dev mode: in-memory, no Redis, log debug
 make docker-redis-ui    # + Redis Commander UI di http://localhost:8081
 make docker-down        # stop semua container
 make docker-down-v      # stop + hapus Redis volume (DATA HILANG)
-```
-
-**Environment variables di `.env`:**
-
-```bash
-COOKIE_SECRET=<generate: openssl rand -base64 32>   # WAJIB
-ADMIN_KEY=<generate: openssl rand -hex 20>           # optional
-ORIGIN=http://your-backend:3000                      # optional
-SECURE_COOKIES=true                                  # set true jika HTTPS
-CORS_ORIGIN=https://yourdomain.com
-PORT=8080
-LOG_LEVEL=info
 ```
 
 ---
