@@ -6,6 +6,7 @@ services:
   # ────────────────────────────────────────────────────────────────────────────
   open-wr:
     image: sammidev/open-wr:latest
+    platform: linux/amd64
     container_name: open-wr-demo-proxy
     restart: unless-stopped
     ports:
