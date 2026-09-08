@@ -115,7 +115,6 @@ func main() {
 	// --- Router ---
 	r := chi.NewRouter()
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.RealIP)
 	r.Use(middleware.RequestID)
 	r.Use(api.PoweredByMiddleware(serviceName))
 
