@@ -3,8 +3,8 @@ FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
-# Copy main application code
-COPY main.go .
+# Copy source code and embedded templates
+COPY . .
 
 # Build lightweight static Go binary
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o demo-app main.go
