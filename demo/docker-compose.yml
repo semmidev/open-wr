@@ -1,0 +1,64 @@
+name: open-wr-demo
+
+services:
+  # ────────────────────────────────────────────────────────────────────────────
+  #  open-wr — Edge Waiting Room Reverse Proxy (from Docker Hub)
+  # ────────────────────────────────────────────────────────────────────────────
+  open-wr:
+    image: sammidev/open-wr:latest
+    container_name: open-wr-demo-proxy
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+    command: ["--config", "config.yaml"]
+    depends_on:
+      redis:
+        condition: service_healthy
+      demo-app:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "/app/owr", "--healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - demo-net
+
+  # ────────────────────────────────────────────────────────────────────────────
+  #  demo-app — Target Web Application (Claude Design System UI)
+  # ────────────────────────────────────────────────────────────────────────────
+  demo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: open-wr-demo-app:latest
+    container_name: open-wr-demo-target
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - demo-net
+
+  # ────────────────────────────────────────────────────────────────────────────
+  #  redis — Session and Queue Store
+  # ────────────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: open-wr-demo-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - demo-net
+
+networks:
+  demo-net:
+    driver: bridge
