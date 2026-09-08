@@ -1,5 +1,5 @@
 # --- Stage 1: Builder ---
-FROM golang:1.27-alpine AS builder7
+FROM golang:1.27-alpine AS builder
 # Build-time arguments
 ARG VERSION=dev
 ARG COMMIT=unknown
