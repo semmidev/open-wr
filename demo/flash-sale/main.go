@@ -65,20 +65,20 @@ func (a *DemoApp) handleHome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	renderPage(w, pageData{
-		Title:       "Claude Store — Open WR Protected Target",
+		Title:       "VIP Tech Store — Open WR Protected Target",
 		PageType:    "home",
 		Badge:       "Open WR Target Server",
-		Heading:     "Welcome to Claude Edition Store",
+		Heading:     "Welcome to VIP Tech Store",
 		Description: "This application is currently protected by Open WR edge proxy. Navigate through the high-traffic portals below to simulate queueing behavior.",
 	})
 }
 
 func (a *DemoApp) handleFlashSale(w http.ResponseWriter, r *http.Request) {
 	renderPage(w, pageData{
-		Title:       "Flash Sale — Claude Book M4 Ultra",
+		Title:       "Flash Sale — Pro Laptop M4 Ultra",
 		PageType:    "flash",
 		Badge:       "Protected by Open WR Flash Sale Room",
-		Heading:     "Claude Book M4 Ultra (Limited Drop)",
+		Heading:     "Pro Laptop M4 Ultra (Limited Drop)",
 		Description: "Congratulations! You have passed through the Open WR waiting room and secured an active session. Stock is currently available.",
 	})
 }

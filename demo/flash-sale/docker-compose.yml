@@ -29,7 +29,7 @@ services:
       - demo-net
 
   # ────────────────────────────────────────────────────────────────────────────
-  #  demo-app — Target Web Application (Claude Design System UI)
+  #  demo-app — Target Web Application
   # ────────────────────────────────────────────────────────────────────────────
   demo-app:
     build:
